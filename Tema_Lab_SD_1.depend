@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1615651340 source:d:\codeblocks projects\tema_lab_sd_1\main.cpp
+	<iostream>
+	<fstream>
+	<random>
+	<chrono>
+
