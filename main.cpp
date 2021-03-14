@@ -10,11 +10,11 @@ using namespace std::chrono;
 int T;
 int N;
 int Max;
-int v[1000000];
 
 
 
-void bubble_sort(int a[], int n)
+
+void Bubble_Sort(int a[], int n)
 {
 	for (int i = 0; i < n - 1; i++)
 	{
@@ -77,15 +77,15 @@ void Merge(int a[], int l, int r)
 }
 
 
-void MergeSort(int a[],int l,int r)
+void Merge_Sort(int a[],int l,int r)
 {
     if(l>=r)
     {
         return;
     }
     int m = l+ (r-l)/2;
-    MergeSort(a,l,m);
-    MergeSort(a,m+1,r);
+    Merge_Sort(a,l,m);
+    Merge_Sort(a,m+1,r);
     Merge(a,l,r);
 }
 
@@ -110,25 +110,23 @@ int part(int a[], int l, int r)
 }
 
 
-
-void quickSort(int a[], int l , int r)
+void Quick_Sort(int a[], int l , int r)
 {
 	if (l < r)
 	{
 		int pi  = part(a, l, r);
-		quickSort(a, l, pi - 1);
-		quickSort(a, pi + 1, r);
+		Quick_Sort(a, l, pi - 1);
+		Quick_Sort(a, pi + 1, r);
 
 	}
 }
 
 
-
-void countSort(int a[], int n)
+void Count_Sort(int a[], int n)
 {
 
     int output[100000];
-    int c[100000];
+    int c[10];
     int maxim = a[0];
 
     for (int i = 1; i < n; i++)
@@ -158,10 +156,43 @@ void countSort(int a[], int n)
 }
 
 
+void sortbydigit(int a[], int n, int exp)
+{
+    int output[n];
+    int i, c[10] = { 0 };
+
+    for (i = 0; i < n; i++)
+        c[(a[i] / exp) % 10]++;
+
+    for (i = 1; i < 10; i++)
+        c[i] += c[i - 1];
+
+    for (i = n - 1; i >= 0; i--)
+    {
+        output[c[(a[i] / exp) % 10] - 1] = a[i];
+        c[(a[i] / exp) % 10]--;
+    }
+
+    for (i = 0; i < n; i++)
+        a[i] = output[i];
+}
+
+
+void radixsort(int a[], int n)
+{
+    int m = a[0];
+    for (int i = 1; i < n; i++)
+        if (a[i] > m)
+            m = a[i];
+
+    for (int exp = 1; m / exp > 0; exp *= 10)
+        sortbydigit(a, n, exp);
+}
+
 
 int* generate_numbers(int N, int Max)
 {
-    //static int v[1000000];
+    int* v = new int[N];
     // cod luat de la: https://en.cppreference.com/w/cpp/numeric/random/uniform_int_distribution
     // rand() are limita la 32767
     random_device rd;
@@ -175,6 +206,7 @@ int* generate_numbers(int N, int Max)
     return v;
 }
 
+
 bool test_Sort(int p[],int N)
 {
     for (int i=0; i<N-1; i++)
@@ -184,6 +216,7 @@ bool test_Sort(int p[],int N)
     }
     return true;
 }
+
 
 int main()
 {
@@ -198,6 +231,12 @@ int main()
 
         int* p;
 
+        if (N>100000){
+            cout<<" Nu stiu de ce, dar programul meu de generare de array cu numere random imi da stack overflow la 10^6 elemente. \n";
+            cout<<" Am tot incercat sa modific alocarea memoriei si nu stiu ce sa ii fac. Trebuia sa folosesc un vector? \n";
+        }
+        else
+        {
         if (N>10000)
             cout<<" bubble sort e mult prea incet la array-uri mai mari de 10000. Sort was successful = 0"<<endl;
         else
@@ -205,46 +244,62 @@ int main()
             p = generate_numbers(N,Max);
 
             auto start = high_resolution_clock::now();
-            bubble_sort(p,N);
+            Bubble_Sort(p,N);
             auto stop = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>(stop - start);
 
-            cout<<" bubble_sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
+            cout<<" Bubble_Sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
+
+            delete [] p;
         }
 
 
         p = generate_numbers(N,Max);
 
         auto start = high_resolution_clock::now();
-        MergeSort(p,0,N);
+        Merge_Sort(p,0,N);
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
 
-        cout<<" merge_sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
+        cout<<" Merge_Sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
 
-
-        p = generate_numbers(N,Max);
-
-        start = high_resolution_clock::now();
-        quickSort(p,0,N);
-        stop = high_resolution_clock::now();
-        duration = duration_cast<microseconds>(stop - start);
-
-        cout<<" quick_sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
-
+        delete [] p;
 
         p = generate_numbers(N,Max);
 
         start = high_resolution_clock::now();
-        countSort(p,N);
+        Quick_Sort(p,0,N);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
 
-        cout<<" count_sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
+        cout<<" Quick_Sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
 
+        delete [] p;
 
+        p = generate_numbers(N,Max);
+
+        start = high_resolution_clock::now();
+        Count_Sort(p,N);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+
+        cout<<" Count_Sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
+
+        delete [] p;
+
+        p = generate_numbers(N,Max);
+
+        start = high_resolution_clock::now();
+        radixsort(p,N);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+
+        cout<<" Radix_Sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
+
+        delete [] p;
+
+        }
     }
-
 
     Tests.close();
 
