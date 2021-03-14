@@ -2,7 +2,7 @@
 #include <fstream>
 #include <random>
 #include <chrono>
-
+#include <algorithm>
 using namespace std;
 using namespace std::chrono;
 
@@ -231,7 +231,7 @@ int main()
 
         int* p;
 
-        if (N>100000){
+        if (N>100000 || Max>100000 ){
             cout<<" Nu stiu de ce, dar programul meu de generare de array cu numere random imi da stack overflow la 10^6 elemente. \n";
             cout<<" Am tot incercat sa modific alocarea memoriei si nu stiu ce sa ii fac. Trebuia sa folosesc un vector? \n";
         }
@@ -295,6 +295,17 @@ int main()
         duration = duration_cast<microseconds>(stop - start);
 
         cout<<" Radix_Sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
+
+        delete [] p;
+
+        p = generate_numbers(N,Max);
+
+        start = high_resolution_clock::now();
+        sort(p,p+N);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+
+        cout<<" std::sort "<<duration.count()<<" microsecunde."<<" Sort was successful = "<<test_Sort(p, N)<<endl;
 
         delete [] p;
 
