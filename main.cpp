@@ -126,7 +126,7 @@ void Count_Sort(int a[], int n)
 {
 
     int output[100000];
-    int c[10];
+    int c[100000];
     int maxim = a[0];
 
     for (int i = 1; i < n; i++)
