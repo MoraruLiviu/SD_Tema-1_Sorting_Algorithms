@@ -1,6 +1,6 @@
 Probleme cu implementarea:
 
-  -Stack overflow la valori de peste 10^5 pe care nu stiu cum sa o rezolv.
+  -Stack overflow la valori de peste 10^5 pe care nu stiu cum sa o rezolv. \n
   -Nu am implementat mai multe teste decat random array
 
 Observatii:
